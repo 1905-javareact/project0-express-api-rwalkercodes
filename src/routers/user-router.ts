@@ -1,6 +1,6 @@
 import express from 'express'
 //import { User } from '../models/user'
-import { getAllUsersService, getUserByUsernameAndPasswordService, getUserByIdService, updateUserService } from '../user-service';
+import { getAllUsersService, getUserByUsernameAndPasswordService, getUserByIdService, updateUserService } from '../dao/service/user-service';
 import { authorization } from '../middleware/auth-middleware';
 
 export const userRouter = express.Router();
@@ -37,6 +37,7 @@ userRouter.get('/users/:id', async (req, res)=>{
     }
 })
 
+// update users
 userRouter.patch('/users', [authorization(3), async (req, res)=>{
     const {userId, username, password, firstName, lastName, email, role} = req.body
     
@@ -59,10 +60,6 @@ userRouter.patch('/users', [authorization(3), async (req, res)=>{
         }
     }
 }])
-
-userRouter.get('/reimbursements', (req, res)=>{
-    //const {reimbursementId, author, amount, dateSubmittted, dateResolved, description, resolver, status, type} = req.body
-})
 
 
 

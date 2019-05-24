@@ -1,5 +1,5 @@
 import { Request } from 'express'
-import { getAllUsers, getUserByUsernameAndPassword, getUserById, updateUser } from './dao/user-dao'
+import { getAllUsers, getUserByUsernameAndPassword, getUserById, updateUser } from '../user-dao'
 
 export async function getAllUsersService(){
     return await getAllUsers()

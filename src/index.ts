@@ -2,6 +2,7 @@ import express from 'express'
 import { sessionMiddleware } from './middleware/session-middleware'
 import bodyParser from 'body-parser'
 import { userRouter } from './routers/user-router'
+import { reimRouter } from './routers/reim-router'
 //import { User } from '../models/user'
 
 
@@ -13,6 +14,8 @@ app.use(sessionMiddleware);
 
 app.use(userRouter);
 
-app.listen(8080, ()=>{
+app.use(reimRouter);
+
+app.listen(3020, ()=>{
     console.log('app has started');
 })
