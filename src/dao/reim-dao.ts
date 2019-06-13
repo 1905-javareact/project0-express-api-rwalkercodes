@@ -3,6 +3,21 @@ import { Request } from 'express'
 import { PoolClient } from 'pg'
 import { sqlReimtoJSReim } from '../util/reim-converter';
 
+export async function getAllReimbursements(){
+    let client:PoolClient
+
+    try{
+        client = await connectionPool.connect()
+        let result = await client.query('SELECT * FROM project0_reimbursement')
+        return result.rows.map(sqlReimtoJSReim)
+    } catch(err){
+        console.log(err);
+        return 'Internal Server Error'
+    } finally{
+        client && client.release()
+    }
+}
+
 export async function submitReim(req:Request, amount:number, description:string, type:number){
     let client:PoolClient
     let didSubmit = false;
@@ -72,22 +87,21 @@ export async function findReimByUser(author:number){
     }
 }
 
-export async function updateReim(req:Request, id:number, author:number, amount:number, description:string, status:number, type:number){
+export async function updateReim(req:Request, id:number, amount:number, description:string, status:number, type:number){
     let client:PoolClient
     let finman = req.session.user.userId
     let didUpdate = false
     try{
         client = await connectionPool.connect()
-        //let newDate = await client.query(`SELECT to_char(now(), 'Mon dd, yyyy')`)
-        let updateQ = 'UPDATE project0_reimbursement SET reim_author = $1, reim_amount = $2, reim_date_resolved = now(), reim_description = $3, reim_resolver = $4, reim_status = $5, reim_type = $6 WHERE reim_id = $7'
-        await client.query(updateQ, [author, amount, description, finman, status, type, id])
+        let updateQ = 'UPDATE project0_reimbursement SET reim_amount = $1, reim_date_resolved = now(), reim_description = $2, reim_resolver = $3, reim_status = $4, reim_type = $5 WHERE reim_id = $6'
+        await client.query(updateQ, [amount, description, finman, status, type, id])
         let result = await client.query('SELECT * FROM project0_reimbursement WHERE reim_id = $1', [id])
+        console.log(result)
         if(result){
             console.log(sqlReimtoJSReim(result.rows[0]))
             didUpdate = true
         }
         return didUpdate
-        //return sqlReimtoJSReim(result.rows[0])
     } catch(err){
         console.log(err);
         return 'Internal Server Error'

@@ -4,9 +4,15 @@ import bodyParser from 'body-parser'
 import { userRouter } from './routers/user-router'
 import { reimRouter } from './routers/reim-router'
 //import { User } from '../models/user'
+import cors = require('cors')
 
 
 const app = express();
+
+app.use(cors({
+    origin: ['*', 'http://localhost:3000'],
+    credentials: true
+}))
 
 app.use(bodyParser.json());
 
